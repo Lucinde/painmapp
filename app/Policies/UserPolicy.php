@@ -11,18 +11,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        // Admin
-        if ($user->can('view_any_user')) {
-            return true;
-        }
-
-        // Fysio
-        if ($user->can('view_user')) {
-            return true;
-        }
-
-        // Client
-        return false;
+        return $user->can('ViewAny:User');
     }
 
     /**
@@ -31,17 +20,17 @@ class UserPolicy
     public function view(User $user, User $model): bool
     {
         // Admin
-        if ($user->can('view_any_user')) {
+        if ($user->can('ViewAny:User')) {
             return true;
         }
 
         // Own profile
-        if ($model->id === $user->id) {
-            return $user->can('view_user');
+        if ($model->id === $user->id && $user->can('View:User')) {
+            return true;
         }
 
         // Fysio
-        if ($user->can('view_user') && $model->therapist_id === $user->id) {
+        if ($model->therapist_id === $user->id && $user->can('View:User')) {
             return true;
         }
 
@@ -53,8 +42,13 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        // Admin & Fysio
-        return $user->can('create_user');
+        // Admin
+        if ($user->can('CreateAny:User')) {
+            return true;
+        }
+
+        // Fysio
+        return $user->can('Create:User');
     }
 
     /**
@@ -63,17 +57,17 @@ class UserPolicy
     public function update(User $user, User $model): bool
     {
         // Admin
-        if ($user->can('update_any_user')) {
+        if ($user->can('UpdateAny:User')) {
             return true;
         }
 
         // Own profile
-        if ($model->id === $user->id) {
-            return $user->can('update_user');
+        if ($model->id === $user->id && $user->can('Update:User')) {
+            return true;
         }
 
         // Fysio: own clients
-        if ($user->can('update_user') && $model->therapist_id === $user->id) {
+        if ($model->therapist_id === $user->id && $user->can('Update:User')) {
             return true;
         }
 
@@ -86,12 +80,12 @@ class UserPolicy
     public function delete(User $user, User $model): bool
     {
         // Admin
-        if ($user->can('delete_any_user')) {
+        if ($user->can('DeleteAny:User')) {
             return true;
         }
 
         // Fysio: own clients
-        if ($user->can('delete_user') && $model->therapist_id === $user->id) {
+        if ($user->can('Delete:User') && $model->therapist_id === $user->id) {
             return true;
         }
 
@@ -100,11 +94,11 @@ class UserPolicy
 
     public function restore(User $user, User $model): bool
     {
-        return $user->can('update_any_user');
+        return $user->can('UpdateAny:User');
     }
 
     public function forceDelete(User $user, User $model): bool
     {
-        return $user->can('delete_any_user');
+        return $user->can('DeleteAny:User');
     }
 }
