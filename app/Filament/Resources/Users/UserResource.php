@@ -22,6 +22,16 @@ class UserResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'User';
 
+    public static function getModelLabel(): string
+    {
+        return __('user.title'); // enkelvoud
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('user.plural_title'); // meervoud
+    }
+
     public static function form(Schema $schema): Schema
     {
         return UserForm::configure($schema);
