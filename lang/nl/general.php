@@ -6,4 +6,6 @@ return [
     'deleted_at' => 'verwijderd op',
     'name'       => 'naam',
     'email'      => 'e-mailadres',
+    'password'   => 'wachtwoord',
+    'copied'    => 'gekopieerd',
 ];

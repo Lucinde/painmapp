@@ -13,18 +13,24 @@ class UserForm
     {
         return $schema
             ->components([
-                Select::make('therapist_id')
-                    ->relationship('therapist', 'name'),
                 TextInput::make('name')
+                    ->label(ucfirst(__('general.name')))
                     ->required(),
                 TextInput::make('email')
-                    ->label('Email address')
+                    ->label(ucfirst(__('general.email')))
                     ->email()
                     ->required(),
-                DateTimePicker::make('email_verified_at'),
                 TextInput::make('password')
+                    ->label(ucfirst(__('general.password')))
                     ->password()
+                    ->revealable()
+                    ->copyable(__('general.copied'))
                     ->required(),
+                Select::make('therapist_id')
+                    ->label(ucfirst(__('user.physio')))
+                    ->relationship('therapist', 'name', modifyQueryUsing: fn ($query) => $query->whereHas('roles', fn($q) => $q->where('name', 'fysio')))
+                    ->default(fn() => auth()->user()->hasRole('fysio') ? auth()->id() : null)
+                    ->disabled(fn() => auth()->user()->hasRole('fysio')),
             ]);
     }
 }
