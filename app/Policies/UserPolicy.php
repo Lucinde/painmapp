@@ -29,7 +29,7 @@ class UserPolicy
             return true;
         }
 
-        // Fysio
+        // Physio
         if ($model->therapist_id === $user->id && $user->can('View:User')) {
             return true;
         }
@@ -47,7 +47,7 @@ class UserPolicy
             return true;
         }
 
-        // Fysio
+        // Physio
         return $user->can('Create:User');
     }
 
@@ -66,7 +66,7 @@ class UserPolicy
             return true;
         }
 
-        // Fysio: own clients
+        // Physio: own clients
         if ($model->therapist_id === $user->id && $user->can('Update:User')) {
             return true;
         }
@@ -84,7 +84,7 @@ class UserPolicy
             return true;
         }
 
-        // Fysio: own clients
+        // Physio: own clients
         if ($user->can('Delete:User') && $model->therapist_id === $user->id) {
             return true;
         }

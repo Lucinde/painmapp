@@ -17,15 +17,11 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        $user = User::firstOrCreate(
-            ['email' => 'test@example.com'], // unieke zoekcriteria
-            [
-                'name' => 'Test User',
-                'password' => bcrypt('password123'), // vergeet wachtwoord niet
-            ]
-        );
-
         // Add Roles
         $this->call(ShieldSeeder::class);
+
+        // Add Test Users
+        // TODO: verwijderen bij livegang
+        $this->call(TestUserSeeder::class);
     }
 }
