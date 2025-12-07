@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use App\Filament\Resources\Users\Pages\CreateUser;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -25,7 +26,8 @@ class UserForm
                     ->password()
                     ->revealable()
                     ->copyable(__('general.copied'))
-                    ->required(),
+                    ->required(fn($livewire) => $livewire instanceof CreateUser)
+                    ->dehydrated(fn ($state) => filled($state)),
                 Select::make('therapist_id')
                     ->label(ucfirst(__('user.physio')))
                     ->relationship('therapist', 'name', modifyQueryUsing: fn ($query) => $query->whereHas('roles', fn($q) => $q->where('name', 'fysio')))
