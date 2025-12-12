@@ -27,6 +27,7 @@ grumphp:
     phpstan:
       configuration: phpstan.neon
       level: null   # gebruik level uit phpstan.neon
+      memory_limit: 512M
       ignore_patterns:
         - tests
       triggered_by: [ php, phtml ]
