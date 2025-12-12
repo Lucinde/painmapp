@@ -13,5 +13,6 @@ parameters:
 #    ignoreErrors:
 #        - '#PHPDoc tag @var#'
 #
-#    excludePaths:
-#        - ./*/*/FileToBeExcluded.php
+
+    excludePaths:
+        - %rootDir%/../../../_ide_helper.php
