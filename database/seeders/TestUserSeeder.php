@@ -14,35 +14,33 @@ class TestUserSeeder extends Seeder
     {
         $roles = Role::all();
 
-        $fysio = null;
+        // create fysiotherapists
+        $fysioRole = $roles->firstWhere('name', 'fysio');
 
-        // create fysio
-        foreach ($roles as $role) {
-            if ($role->name === 'fysio') {
-                $email = $role->name . '@example.com';
-                $fysio = User::firstOrCreate(
-                    ['email' => $email],
-                    [
-                        'name' => ucfirst($role->name) . ' Test',
-                        'password' => Hash::make('password123'),
-                        'email_verified_at' => now(),
-                    ]
-                );
-                $fysio->assignRole($role);
-                break;
-            }
+        $fysios = collect();
+
+        for ($i = 1; $i <= 2; $i++) {
+            $fysio = User::firstOrCreate(
+                ['email' => "fysio{$i}@example.com"],
+                [
+                    'name' => "Fysio {$i}",
+                    'password' => Hash::make('password123'),
+                    'email_verified_at' => now(),
+                ]
+            );
+
+            $fysio->assignRole($fysioRole);
+            $fysios->push($fysio);
         }
 
         // create other roles
         foreach ($roles as $role) {
             if ($role->name === 'fysio') {
-                continue; // fysio is already there
+                continue;
             }
 
-            $email = $role->name . '@example.com';
-
             $user = User::firstOrCreate(
-                ['email' => $email],
+                ['email' => $role->name . '@example.com'],
                 [
                     'name' => ucfirst($role->name) . ' Test',
                     'password' => Hash::make('password123'),
@@ -51,14 +49,28 @@ class TestUserSeeder extends Seeder
             );
 
             $user->assignRole($role);
+        }
 
-            // add relation for client and fysio
-            if ($user->hasRole('client') && $fysio) {
-                $user->therapist_id = $fysio->id;
-                $user->save();
+        // create clients with daylogs and add them to different fysios
+        $clientRole = $roles->firstWhere('name', 'client');
+
+        foreach ($fysios as $fysio) {
+            // elke fysio krijgt 2–4 clients
+            $clientCount = rand(2, 4);
+
+            for ($i = 1; $i <= $clientCount; $i++) {
+                $client = User::create([
+                    'name' => "Client {$fysio->id}-{$i}",
+                    'email' => "client_{$fysio->id}_{$i}@example.com",
+                    'password' => Hash::make('password123'),
+                    'email_verified_at' => now(),
+                    'therapist_id' => $fysio->id,
+                ]);
+
+                $client->assignRole($clientRole);
 
                 DayLog::factory()
-                    ->forUser($user)
+                    ->forUser($client)
                     ->count(7)
                     ->create();
             }
