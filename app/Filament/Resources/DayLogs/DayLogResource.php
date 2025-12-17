@@ -27,6 +27,16 @@ class DayLogResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'DayLog';
 
+    public static function getModelLabel(): string
+    {
+        return __('daylog.title');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('daylog.plural_title');
+    }
+
     public static function form(Schema $schema): Schema
     {
         return DayLogForm::configure($schema);
@@ -54,7 +64,7 @@ class DayLogResource extends Resource
         return [
             'index' => ListDayLogs::route('/'),
             'create' => CreateDayLog::route('/create'),
-            'view' => ViewDayLog::route('/{record}'),
+//            'view' => ViewDayLog::route('/{record}'),
             'edit' => EditDayLog::route('/{record}/edit'),
         ];
     }

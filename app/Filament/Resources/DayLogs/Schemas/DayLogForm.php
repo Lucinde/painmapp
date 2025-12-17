@@ -14,11 +14,14 @@ class DayLogForm
         return $schema
             ->components([
                 Select::make('user_id')
+                    ->label(ucfirst(__('general.name')))
                     ->relationship('user', 'name')
                     ->required(),
                 DatePicker::make('date')
+                    ->label(ucfirst(__('general.date')))
                     ->required(),
                 Textarea::make('notes')
+                    ->label(ucfirst(__('general.notes')))
                     ->columnSpanFull(),
             ]);
     }
