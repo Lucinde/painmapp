@@ -11,6 +11,7 @@ use App\Filament\Resources\DayLogs\Schemas\DayLogInfolist;
 use App\Filament\Resources\DayLogs\Tables\DayLogsTable;
 use App\Models\DayLog;
 use BackedEnum;
+use Filament\Facades\Filament;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -58,11 +59,37 @@ class DayLogResource extends Resource
         ];
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return static::scopeForUser(
+            parent::getEloquentQuery()
+        );
+    }
+
     public static function getRecordRouteBindingEloquentQuery(): Builder
     {
-        return parent::getRecordRouteBindingEloquentQuery()
-            ->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]);
+        return static::scopeForUser(
+            parent::getRecordRouteBindingEloquentQuery()
+                ->withoutGlobalScopes([
+                    SoftDeletingScope::class,
+                ])
+        );
     }
+
+    protected static function scopeForUser(Builder $query): Builder
+    {
+        $user = Filament::auth()->user();
+
+        if ($user?->can('ViewAny:DayLog')) {
+            return $query;
+        }
+
+        return $query->where(function (Builder $query) use ($user) {
+            $query->where('user_id', $user->id)
+                ->orWhereHas('user', fn ($q) =>
+                $q->where('therapist_id', $user->id)
+                );
+        });
+    }
+
 }
