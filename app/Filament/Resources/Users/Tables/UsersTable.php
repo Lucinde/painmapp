@@ -54,9 +54,23 @@ class UsersTable
             ->modifyQueryUsing(function (Builder $query) {
                 $user = Auth::user();
 
-                if ($user->can('ViewAssigned:User')) {
-                    $query->where('therapist_id', $user->id)->orWhere('id', $user->id);
+                if ($user->can('ViewAny:User')) {
+                    // Super admin: alles zien, geen filter
+                    return $query;
                 }
+
+                if ($user->can('ViewClient:User')) {
+                    // Fysio: alleen eigen clients
+                    $query->where('therapist_id', $user->id);
+                } elseif ($user->can('ViewOwn:User')) {
+                    // Client: alleen zichzelf
+                    $query->where('id', $user->id);
+                } else {
+                    // Geen permissie: niks tonen
+                    $query->whereRaw('1 = 0');
+                }
+
+                return $query;
             });
     }
 }

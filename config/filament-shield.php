@@ -170,6 +170,13 @@ return [
                 'update',
                 'delete',
             ],
+            \App\Filament\Resources\Users\UserResource::class => [
+                'viewClient'
+            ],
+            \App\Filament\Resources\DayLogs\DayLogResource::class => [
+                'viewOwn',
+                'viewClient'
+            ]
         ],
         'exclude' => [
             //

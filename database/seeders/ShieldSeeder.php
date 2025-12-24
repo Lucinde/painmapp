@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 use BezhanSalleh\FilamentShield\Support\Utils;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 
 class ShieldSeeder extends Seeder
@@ -14,8 +13,8 @@ class ShieldSeeder extends Seeder
     {
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        $rolesWithPermissions = '[{"name":"super_admin","guard_name":"web","permissions":["ViewAny:Role","View:Role","Create:Role","Update:Role","Delete:Role","Restore:Role","ForceDelete:Role","ForceDeleteAny:Role","RestoreAny:Role","Replicate:Role","Reorder:Role","ViewAny:User","View:User","Create:User","Update:User","Delete:User","Restore:User","ForceDelete:User","ForceDeleteAny:User","RestoreAny:User","Replicate:User","Reorder:User"]},{"name":"fysio","guard_name":"web","permissions":["View:Role","ViewAny:User","View:User","Create:User","Update:User","Delete:User", "ViewAssigned:User"]},{"name":"client","guard_name":"web","permissions":["View:User","Update:User"]}]';
-        $directPermissions = '[]';
+        $rolesWithPermissions = '[{"name":"super_admin","guard_name":"web","permissions":["ViewAny:Role","View:Role","Create:Role","Update:Role","Delete:Role","Restore:Role","ForceDelete:Role","ForceDeleteAny:Role","RestoreAny:Role","Replicate:Role","Reorder:Role","ViewAny:User","View:User","Create:User","Update:User","Delete:User","Restore:User","ForceDelete:User","ForceDeleteAny:User","RestoreAny:User","Replicate:User","Reorder:User","ViewAny:DayLog","View:DayLog","Create:DayLog","Update:DayLog","ForceDeleteAny:DayLog","ForceDelete:DayLog","Delete:DayLog","Restore:DayLog","RestoreAny:DayLog","Replicate:DayLog","Reorder:DayLog","ViewOwn:DayLog","ViewClient:DayLog","ViewClient:User"]},{"name":"fysio","guard_name":"web","permissions":["View:Role","View:User","Create:User","Update:User","Delete:User","View:DayLog","Create:DayLog","Update:DayLog","ViewOwn:DayLog","ViewClient:DayLog","ViewClient:User"]},{"name":"client","guard_name":"web","permissions":["View:User","Update:User","ViewAny:DayLog","View:DayLog","Create:DayLog","Update:DayLog","ForceDelete:DayLog","Delete:DayLog","Restore:DayLog","Replicate:DayLog","Reorder:DayLog","ViewOwn:DayLog"]}]';
+        $directPermissions = '{"22":{"name":"ViewAssigned:User","guard_name":"web"},"36":{"name":"ViewOwn:User","guard_name":"web"}}';
 
         static::makeRolesWithPermissions($rolesWithPermissions);
         static::makeDirectPermissions($directPermissions);
@@ -26,9 +25,9 @@ class ShieldSeeder extends Seeder
     protected static function makeRolesWithPermissions(string $rolesWithPermissions): void
     {
         if (! blank($rolePlusPermissions = json_decode($rolesWithPermissions, true))) {
-            /** @var Role $roleModel */
+            /** @var Model $roleModel */
             $roleModel = Utils::getRoleModel();
-            /** @var Permission $permissionModel */
+            /** @var Model $permissionModel */
             $permissionModel = Utils::getPermissionModel();
 
             foreach ($rolePlusPermissions as $rolePlusPermission) {
@@ -54,7 +53,7 @@ class ShieldSeeder extends Seeder
     public static function makeDirectPermissions(string $directPermissions): void
     {
         if (! blank($permissions = json_decode($directPermissions, true))) {
-            /** @var Permission $permissionModel */
+            /** @var Model $permissionModel */
             $permissionModel = Utils::getPermissionModel();
 
             foreach ($permissions as $permission) {
