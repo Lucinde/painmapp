@@ -12,6 +12,8 @@ use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class DayLogsTable
 {
@@ -56,6 +58,24 @@ class DayLogsTable
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->modifyQueryUsing(function (Builder $query) {
+                $user = Auth::user();
+
+                if ($user->can('ViewAny:DayLog')) {
+                    return $query;
+                }
+
+                if ($user->can('ViewClient:DayLog')) {
+                    return $query->whereHas('user', fn($q) => $q->where('therapist_id', $user->id)
+                    );
+                }
+
+                if ($user->can('ViewOwn:DayLog')) {
+                    return $query->where('user_id', $user->id);
+                }
+
+                return $query->whereRaw('1 = 0');
+            });
     }
 }

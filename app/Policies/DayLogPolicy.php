@@ -1,98 +1,95 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
+use Illuminate\Foundation\Auth\User as AuthUser;
 use App\Models\DayLog;
-use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class DayLogPolicy
 {
-    /**
-     * Determine whether the user can view any day logs.
-     */
-    public function viewAny(User $user): bool
+    use HandlesAuthorization;
+
+    public function viewAny(AuthUser $user): bool
+    {
+        return
+            $user->can('ViewAny:DayLog') ||
+            $user->can('ViewClient:DayLog') ||
+            $user->can('ViewOwn:DayLog');
+    }
+
+    public function view(AuthUser $user, DayLog $dayLog): bool
     {
         if ($user->can('ViewAny:DayLog')) {
             return true;
         }
 
-        return $user->can('View:DayLog');
+        if ($user->can('ViewClient:DayLog')) {
+            return $dayLog->user?->therapist_id === $user->id;
+        }
+
+        if ($user->can('ViewOwn:DayLog')) {
+            return $dayLog->user_id === $user->id;
+        }
+
+        return false;
     }
 
-    /**
-     * Determine whether the user can view a specific day log.
-     */
-    public function view(User $user, DayLog $dayLog): bool
+    public function create(AuthUser $authUser): bool
     {
-        // Admin
-        if ($user->can('ViewAny:DayLog')) {
-            return true;
-        }
-
-        if (! $user->can('View:DayLog')) {
-            return false;
-        }
-
-        // Client: own log
-        if ($dayLog->user_id === $user->id) {
-            return true;
-        }
-
-        // Physio: logs from clients
-        return $dayLog->user?->therapist_id === $user->id;
+        return $authUser->can('Create:DayLog');
     }
 
-    /**
-     * Determine whether the user can create day logs.
-     */
-    public function create(User $user): bool
+    public function update(AuthUser $authUser, DayLog $dayLog): bool
     {
-        return $user->can('Create:DayLog');
+        return $authUser->can('Update:DayLog');
     }
 
-    /**
-     * Determine whether the user can update the day log.
-     */
-    public function update(User $user, DayLog $dayLog): bool
+    public function delete(AuthUser $authUser, DayLog $dayLog): bool
     {
-        // Admin
-        if ($user->can('UpdateAny:DayLog')) {
-            return true;
-        }
-
-        if (! $user->can('Update:DayLog')) {
-            return false;
-        }
-
-        // Only owner can edit
-        return $dayLog->user_id === $user->id;
+        return $authUser->can('Delete:DayLog');
     }
 
-    /**
-     * Determine whether the user can delete the day log.
-     */
-    public function delete(User $user, DayLog $dayLog): bool
+    public function restore(AuthUser $authUser, DayLog $dayLog): bool
     {
-        // Admin
-        if ($user->can('DeleteAny:DayLog')) {
-            return true;
-        }
-
-        if (! $user->can('Delete:DayLog')) {
-            return false;
-        }
-
-        // Only owner
-        return $dayLog->user_id === $user->id;
+        return $authUser->can('Restore:DayLog');
     }
 
-    public function restore(User $user, DayLog $dayLog): bool
+    public function forceDelete(AuthUser $authUser, DayLog $dayLog): bool
     {
-        return $user->can('UpdateAny:DayLog');
+        return $authUser->can('ForceDelete:DayLog');
     }
 
-    public function forceDelete(User $user, DayLog $dayLog): bool
+    public function forceDeleteAny(AuthUser $authUser): bool
     {
-        return $user->can('DeleteAny:DayLog');
+        return $authUser->can('ForceDeleteAny:DayLog');
     }
+
+    public function restoreAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('RestoreAny:DayLog');
+    }
+
+    public function replicate(AuthUser $authUser, DayLog $dayLog): bool
+    {
+        return $authUser->can('Replicate:DayLog');
+    }
+
+    public function reorder(AuthUser $authUser): bool
+    {
+        return $authUser->can('Reorder:DayLog');
+    }
+
+    public function viewOwn(AuthUser $authUser, DayLog $dayLog): bool
+    {
+        return $authUser->can('ViewOwn:DayLog');
+    }
+
+    public function viewClient(AuthUser $authUser, DayLog $dayLog): bool
+    {
+        return $authUser->can('ViewClient:DayLog');
+    }
+
 }

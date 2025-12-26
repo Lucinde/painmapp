@@ -6,6 +6,7 @@ use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Auth;
 
 class DayLogForm
 {
@@ -13,10 +14,6 @@ class DayLogForm
     {
         return $schema
             ->components([
-                Select::make('user_id')
-                    ->label(ucfirst(__('general.name')))
-                    ->relationship('user', 'name')
-                    ->required(),
                 DatePicker::make('date')
                     ->label(ucfirst(__('general.date')))
                     ->required(),
