@@ -25,7 +25,7 @@ class UserForm
                     ->label(ucfirst(__('general.password')))
                     ->password()
                     ->revealable()
-                    ->copyable(__('general.copied'))
+                    ->copyable(copyMessage: __('general.copied'))
                     ->required(fn($livewire) => $livewire instanceof CreateUser)
                     ->dehydrated(fn ($state) => filled($state)),
                 Select::make('therapist_id')

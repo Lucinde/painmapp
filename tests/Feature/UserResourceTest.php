@@ -16,40 +16,41 @@ use function Pest\Laravel\assertDatabaseHas;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    // Seed users and permissions
+    // seed users and permissions
     $this->seed(ShieldSeeder::class);
     $this->seed(TestUserSeeder::class);
 
-    // create admin and fysio
+    // get base users
     $this->admin = User::where('email', 'super_admin@example.com')->first();
-    $this->fysio = User::where('email', 'fysio@example.com')->first();
+
+    $this->fysio = User::where('email', 'fysio1@example.com')->first();
+    $this->otherFysio = User::where('email', 'fysio2@example.com')->first();
 });
+
 
 // LIST
 it('admin can load page', function () {
-    $users = User::factory()->count(5)->create();
+    $users = User::factory()->count(1)->create();
 
     actingAs($this->admin);
 
     livewire(ListUsers::class)
+        ->set('tableRecordsPerPage', 50)
         ->call('loadTable')
         ->assertOk()
-        ->assertCanSeeTableRecords($users); // warning: there are 2 users in DB, never create more the 8 factory users to be able to see them all here
+        ->assertCanSeeTableRecords($users); // warning: never create more than 4 factory users to be able to see them all here
 });
 
 it('fysio can only see their own clients in the list', function () {
-    $ownClient = User::factory()->create(['therapist_id' => $this->fysio->id])->assignRole('client');
-    $otherClient = User::factory()->create()->assignRole('client');
+    $ownClients = User::where('therapist_id', $this->fysio->id)->get();
+    $otherClients = User::where('therapist_id', $this->otherFysio->id)->get();
 
     actingAs($this->fysio);
 
     livewire(ListUsers::class)
-        ->assertOk();
-
-    $visibleUsers = UserResource::getModel()::where('therapist_id', $this->fysio->id)->get();
-
-    expect($visibleUsers->contains($ownClient))->toBeTrue();
-    expect($visibleUsers->contains($otherClient))->toBeFalse();
+        ->assertOk()
+        ->assertCanSeeTableRecords($ownClients)
+        ->assertCanNotSeeTableRecords($otherClients);
 });
 
 // CREATE

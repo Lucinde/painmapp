@@ -31,6 +31,8 @@ Linux:
 
 - run de applicatie lokaal met:  
   `composer run dev`
+- Draai de migraties en seed de database:  
+  `php artisan migrate --seed`
 
 # Lokaal mails versturen
 

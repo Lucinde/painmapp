@@ -4,8 +4,10 @@ return [
     'created_at' => 'aangemaakt op',
     'updated_at' => 'bijgewerkt op',
     'deleted_at' => 'verwijderd op',
+    'date' => 'Datum',
     'name'       => 'naam',
     'email'      => 'e-mailadres',
     'password'   => 'wachtwoord',
     'copied'    => 'gekopieerd',
+    'notes' => 'notities',
 ];

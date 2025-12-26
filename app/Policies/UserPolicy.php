@@ -2,103 +2,71 @@
 
 namespace App\Policies;
 
-use App\Models\User;
+use Illuminate\Foundation\Auth\User as AuthUser;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UserPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
-    public function viewAny(User $user): bool
+    use HandlesAuthorization;
+
+    public function viewAny(AuthUser $authUser): bool
     {
-        return $user->can('ViewAny:User');
+        return $authUser->can('ViewAny:User') || $authUser->can('ViewClient:User') || $authUser->can('ViewOwn:User');
     }
 
-    /**
-     * Determine whether the user can view a single user model.
-     */
-    public function view(User $user, User $model): bool
+    public function view(AuthUser $authUser): bool
     {
-        // Admin
-        if ($user->can('ViewAny:User')) {
-            return true;
-        }
-
-        // Own profile
-        if ($model->id === $user->id && $user->can('View:User')) {
-            return true;
-        }
-
-        // Physio
-        if ($model->therapist_id === $user->id && $user->can('View:User')) {
-            return true;
-        }
-
-        return false;
+        return $authUser->can('View:User');
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function create(AuthUser $authUser): bool
     {
-        // Admin
-        if ($user->can('CreateAny:User')) {
-            return true;
-        }
-
-        // Physio
-        return $user->can('Create:User');
+        return $authUser->can('Create:User');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, User $model): bool
+    public function update(AuthUser $authUser): bool
     {
-        // Admin
-        if ($user->can('UpdateAny:User')) {
-            return true;
-        }
-
-        // Own profile
-        if ($model->id === $user->id && $user->can('Update:User')) {
-            return true;
-        }
-
-        // Physio: own clients
-        if ($model->therapist_id === $user->id && $user->can('Update:User')) {
-            return true;
-        }
-
-        return false;
+        return $authUser->can('Update:User');
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, User $model): bool
+    public function delete(AuthUser $authUser): bool
     {
-        // Admin
-        if ($user->can('DeleteAny:User')) {
-            return true;
-        }
-
-        // Physio: own clients
-        if ($user->can('Delete:User') && $model->therapist_id === $user->id) {
-            return true;
-        }
-
-        return false;
+        return $authUser->can('Delete:User');
     }
 
-    public function restore(User $user, User $model): bool
+    public function restore(AuthUser $authUser): bool
     {
-        return $user->can('UpdateAny:User');
+        return $authUser->can('Restore:User');
     }
 
-    public function forceDelete(User $user, User $model): bool
+    public function forceDelete(AuthUser $authUser): bool
     {
-        return $user->can('DeleteAny:User');
+        return $authUser->can('ForceDelete:User');
     }
+
+    public function forceDeleteAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('ForceDeleteAny:User');
+    }
+
+    public function restoreAny(AuthUser $authUser): bool
+    {
+        return $authUser->can('RestoreAny:User');
+    }
+
+    public function replicate(AuthUser $authUser): bool
+    {
+        return $authUser->can('Replicate:User');
+    }
+
+    public function reorder(AuthUser $authUser): bool
+    {
+        return $authUser->can('Reorder:User');
+    }
+
+    public function viewClient(AuthUser $authUser): bool
+    {
+        return $authUser->can('ViewClient:User');
+    }
+
 }
