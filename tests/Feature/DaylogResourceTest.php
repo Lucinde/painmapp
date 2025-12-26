@@ -76,10 +76,7 @@ it('fysio sees only logs of their own clients', function () {
         ->assertCanNotSeeTableRecords($otherClientLogs);
 });
 
-//
-// CREATE TESTS
-//
-
+// CREATE
 it('client can create a daylog for themselves', function () {
     actingAs($this->client, config('filament.auth.guard'));
 
@@ -87,7 +84,6 @@ it('client can create a daylog for themselves', function () {
 
     livewire(CreateDayLog::class)
         ->fillForm([
-            'title' => $data->title,
             'notes' => $data->notes,
             'date'  => $data->date,
         ])
@@ -97,36 +93,19 @@ it('client can create a daylog for themselves', function () {
 
     assertDatabaseHas(DayLog::class, [
         'user_id' => $this->client->id,
-        'title'   => $data->title,
+        'notes'   => $data->notes,
     ]);
 });
 
-it('fysio cannot create a daylog for a client that is not theirs', function () {
-    actingAs($this->fysio, config('filament.auth.guard'));
-
-    $data = DayLog::factory()->make();
-
-    livewire(CreateDayLog::class)
-        ->fillForm([
-            'title' => $data->title,
-            'notes' => $data->notes,
-            'date'  => $data->date,
-        ])
-        ->call('create')
-        ->assertForbidden();
-});
-
-//
 // DIRECT URL / AUTHORIZATION TESTS
-//
-
 it('client cannot access other users daylog via direct url', function () {
     $log = DayLog::where('user_id', $this->otherClient->id)->first();
 
     actingAs($this->client, config('filament.auth.guard'));
 
-    $this->get(DayLogResource::getUrl('view', ['record' => $log]))
-        ->assertNotFound();
+    $this->get(
+        DayLogResource::getUrl('edit', ['record' => $log])
+    )->assertForbidden();
 });
 
 it('fysio cannot access non-client daylog via direct url', function () {
@@ -134,28 +113,26 @@ it('fysio cannot access non-client daylog via direct url', function () {
 
     actingAs($this->fysio, config('filament.auth.guard'));
 
-    $this->get(DayLogResource::getUrl('view', ['record' => $log]))
-        ->assertNotFound();
+    $this->get(
+        DayLogResource::getUrl('edit', ['record' => $log])
+    )->assertForbidden();
 });
 
-//
-// UPDATE TESTS
-//
-
+// UPDATE
 it('client can update own daylog', function () {
     $log = DayLog::where('user_id', $this->client->id)->first();
 
     actingAs($this->client, config('filament.auth.guard'));
 
     livewire(EditDayLog::class, ['record' => $log->getKey()])
-        ->fillForm(['title' => 'Updated Title'])
+        ->fillForm(['notes' => 'Updated Notes'])
         ->call('save')
         ->assertHasNoErrors()
         ->assertNotified();
 
     $log->refresh();
 
-    expect($log->title)->toBe('Updated Title');
+    expect($log->notes)->toBe('Updated Notes');
 });
 
 it('client cannot update other users daylog', function () {
@@ -164,5 +141,5 @@ it('client cannot update other users daylog', function () {
     actingAs($this->client, config('filament.auth.guard'));
 
     $this->get(DayLogResource::getUrl('edit', ['record' => $log]))
-        ->assertNotFound();
+        ->assertForbidden();
 });
