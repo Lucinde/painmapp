@@ -21,6 +21,7 @@ class CreateUser extends CreateRecord
 
     protected function afterCreate(): void
     {
+        /** @var \App\Models\User $user */
         $user = $this->record;
 
         if (auth()->user()->hasRole('fysio')) {
