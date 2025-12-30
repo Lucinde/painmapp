@@ -55,7 +55,7 @@ class DayLogResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\PainlogsRelationManager::class,
         ];
     }
 
