@@ -8,10 +8,14 @@ use App\Models\DayLog;
 use App\Models\User;
 use Database\Seeders\ShieldSeeder;
 use Database\Seeders\TestUserSeeder;
+use Filament\Actions\CreateAction;
+use Filament\Actions\Testing\TestAction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use function Pest\Laravel\actingAs;
 use function Pest\Livewire\livewire;
 use function Pest\Laravel\assertDatabaseHas;
+use App\Filament\Resources\DayLogs\RelationManagers\PainLogsRelationManager;
+use App\Models\PainLog;
 
 uses(RefreshDatabase::class);
 
@@ -143,3 +147,63 @@ it('client cannot update other users daylog', function () {
     $this->get(DayLogResource::getUrl('edit', ['record' => $log]))
         ->assertForbidden();
 });
+
+// PAINLOGS
+it('client sees painlogs in their own daylog', function () {
+    $dayLog = DayLog::where('user_id', $this->client->id)->first();
+
+    $painLog = PainLog::factory()->for($dayLog)->create([
+        'intensity' => 7,
+    ]);
+
+    actingAs($this->client, config('filament.auth.guard'));
+
+    livewire(PainLogsRelationManager::class, [
+        'ownerRecord' => $dayLog,
+        'pageClass' => EditDayLog::class,
+    ])
+        ->assertOk()
+        ->assertCanSeeTableRecords([$painLog]);
+});
+
+it('client can add a painlog to their own daylog', function () {
+    $dayLog = DayLog::factory()->for($this->client)->create();
+
+    actingAs($this->client, config('filament.auth.guard'));
+
+    $painLogData = [
+        'start_time' => '09:00',
+        'end_time'   => '09:45',
+        'intensity'  => 6,
+        'location'   => ['neck'],
+        'notes'      => 'Morning pain',
+    ];
+
+    livewire(PainlogsRelationManager::class, [
+        'ownerRecord' => $dayLog,
+        'pageClass' => EditDayLog::class,
+    ])
+        ->callAction(
+            TestAction::make(CreateAction::class)->table(),
+            $painLogData
+        )
+        ->assertNotified();
+
+    assertDatabaseHas('pain_logs', [
+        'day_log_id' => $dayLog->id,
+        'intensity' => 6,
+        'duration_minutes' => 45,
+    ]);
+});
+
+it('client cannot see painlogs of another users daylog', function () {
+    $dayLog = DayLog::where('user_id', $this->otherClient->id)->first();
+
+    actingAs($this->client, config('filament.auth.guard'));
+
+    $this->get(
+        DayLogResource::getUrl('edit', ['record' => $dayLog])
+    )->assertForbidden();
+});
+
+
