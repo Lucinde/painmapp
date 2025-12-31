@@ -5,7 +5,7 @@ return [
     'plural_title' => 'dagelijkse logs',
     'pain_logs' => [
         'title' => 'Pijn Logboek',
-        'create' => 'Log toevoegen',
+        'create' => 'Pijnlog toevoegen',
         'empty_heading' => 'Geen pijnlogs',
         'empty_description' => 'Er zijn nog geen pijnlogs toegevoegd voor deze dag.',
         'start_time' => 'Starttijd',

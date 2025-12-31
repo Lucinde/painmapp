@@ -45,7 +45,8 @@ class PainlogsRelationManager extends RelationManager
                     ->label(__('daylog.pain_logs.intensity'))
                     ->numeric()
                     ->minValue(1)
-                    ->maxValue(10),
+                    ->maxValue(10)
+                    ->required(),
                 TextInput::make('notes')
                     ->label(__('daylog.pain_logs.notes'))
                     ->maxLength(500),
@@ -65,6 +66,8 @@ class PainlogsRelationManager extends RelationManager
                     ->label(__('daylog.pain_logs.end_time'))
                     ->dateTime('H:i')
                     ->sortable(),
+                TextColumn::make('duration_minutes')
+                    ->label(__('daylog.pain_logs.duration_minutes')),
                 TextColumn::make('location')
                     ->label(__('daylog.pain_logs.location'))
                     ->badge()

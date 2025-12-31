@@ -16,6 +16,7 @@ class DayLogForm
             ->components([
                 DatePicker::make('date')
                     ->label(ucfirst(__('general.date')))
+                    ->default(now())
                     ->required(),
                 Textarea::make('notes')
                     ->label(ucfirst(__('general.notes')))

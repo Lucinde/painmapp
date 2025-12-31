@@ -28,6 +28,7 @@ class PainLog extends Model
         return $this->belongsTo(DayLog::class);
     }
 
+    // calculate duration minutes when saving log
     protected static function booted(): void
     {
         static::saving(function ($painLog) {
