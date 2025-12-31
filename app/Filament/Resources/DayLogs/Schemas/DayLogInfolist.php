@@ -3,6 +3,8 @@
 namespace App\Filament\Resources\DayLogs\Schemas;
 
 use App\Models\DayLog;
+use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\RepeatableEntry\TableColumn;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -33,6 +35,27 @@ class DayLogInfolist
                     ->label(ucfirst(__('general.deleted_at')))
                     ->dateTime()
                     ->visible(fn (DayLog $record): bool => $record->trashed()),
+                RepeatableEntry::make('painlogs')
+                    ->label(ucfirst(__('daylog.pain_logs.title')))
+                    ->table([
+                        TableColumn::make(__('daylog.pain_logs.start_time')),
+                        TableColumn::make(__('daylog.pain_logs.end_time')),
+                        TableColumn::make(__('daylog.pain_logs.duration_minutes')),
+                        TableColumn::make(__('daylog.pain_logs.intensity')),
+                        TableColumn::make(__('daylog.pain_logs.location')),
+                        TableColumn::make(__('daylog.pain_logs.notes')),
+                    ])
+                    ->schema([
+                        TextEntry::make('start_time')
+                            ->dateTime('H:i'),
+                        TextEntry::make('end_time')
+                            ->dateTime('H:i'),
+                        TextEntry::make('duration_minutes'),
+                        TextEntry::make('intensity'),
+                        TextEntry::make('location'),
+                        TextEntry::make('notes'),
+                    ])
+                    ->columnSpanFull(),
             ]);
     }
 }
