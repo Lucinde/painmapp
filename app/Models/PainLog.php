@@ -5,13 +5,14 @@ namespace App\Models;
 use App\Enums\PainLocation;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PainLog extends Model
 {
-    use softDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'day_log_id',

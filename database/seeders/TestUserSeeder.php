@@ -3,8 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\DayLog;
+use App\Models\PainLog;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 
@@ -69,10 +71,23 @@ class TestUserSeeder extends Seeder
 
                 $client->assignRole($clientRole);
 
-                DayLog::factory()
+                // create daylogs for clients
+                /** @var Collection<int, DayLog> $dayLogs */
+                $dayLogs = DayLog::factory()
                     ->forUser($client)
                     ->count(7)
                     ->create();
+
+                // add random painlogs for client
+                $dayLogs->each(function (DayLog $dayLog) {
+                    if (rand(1, 100) <= 70) {
+                        PainLog::factory()
+                            ->for($dayLog)
+                            ->count(rand(1, 4))
+                            ->create();
+                    }
+                });
+
             }
         }
     }
