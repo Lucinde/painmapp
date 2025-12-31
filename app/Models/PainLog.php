@@ -24,6 +24,7 @@ class PainLog extends Model
         'notes',
     ];
 
+    // Get related DayLog
     public function dayLog(): BelongsTo
     {
         return $this->belongsTo(DayLog::class);

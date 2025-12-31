@@ -42,6 +42,7 @@ class DayLog extends Model
         return $this->belongsTo(User::class);
     }
 
+    // Get all related painlogs
     public function painlogs(): HasMany
     {
         return $this->hasMany(PainLog::class);

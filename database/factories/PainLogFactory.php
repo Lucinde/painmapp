@@ -27,6 +27,7 @@ class PainLogFactory extends Factory
             'day_log_id' => DayLog::factory(),
             'start_time' => $startTime->format('H:i:s'),
             'end_time'   => $endTime->format('H:i:s'),
+            'duration_minutes' => Carbon::parse($startTime)->diffInMinutes(Carbon::parse($endTime)),
             'location' => collect(PainLocation::cases())
                 ->random($this->faker->numberBetween(1, 3))
                 ->map(fn (PainLocation $location) => $location->value)
