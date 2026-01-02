@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\PainLocation;
+use App\Traits\CalculateDuration;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PainLog extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, CalculateDuration;
 
     protected $fillable = [
         'day_log_id',
@@ -28,20 +29,6 @@ class PainLog extends Model
     public function dayLog(): BelongsTo
     {
         return $this->belongsTo(DayLog::class);
-    }
-
-    // calculate duration minutes when saving log
-    protected static function booted(): void
-    {
-        static::saving(function ($painLog) {
-            if ($painLog->start_time && $painLog->end_time) {
-                $painLog->duration_minutes =
-                    Carbon::parse($painLog->start_time)
-                        ->diffInMinutes(
-                            Carbon::parse($painLog->end_time)
-                        );
-            }
-        });
     }
 
     protected function casts(): array
