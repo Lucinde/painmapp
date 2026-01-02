@@ -43,9 +43,15 @@ class DayLog extends Model
     }
 
     // Get all related painlogs
-    public function painlogs(): HasMany
+    public function painLogs(): HasMany
     {
         return $this->hasMany(PainLog::class);
+    }
+
+    // Get all related activitylogs
+    public function activityLogs(): HasMany
+    {
+        return $this->hasMany(ActivityLog::class);
     }
 
     // Get all daylogs from specific user

@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('day_log_id')->constrained()->cascadeOnDelete();
             $table->string('activity_category');
+            $table->time('start_time');
+            $table->time('end_time');
             $table->unsignedInteger('duration_minutes');
             $table->unsignedTinyInteger('intensity_level')->nullable();
             $table->unsignedTinyInteger('perceived_load')->nullable();

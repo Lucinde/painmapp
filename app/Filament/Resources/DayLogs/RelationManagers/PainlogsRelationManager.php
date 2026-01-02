@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PainlogsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'painlogs';
+    protected static string $relationship = 'painLogs';
 
     protected static ?string $recordTitleAttribute = 'id';
 
