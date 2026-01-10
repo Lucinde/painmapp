@@ -13,12 +13,13 @@ return new class extends Migration
     {
         Schema::create('activity_logs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('day_log_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('day_log_id')->constrained()->onDelete('cascade');
             $table->string('activity_category');
+            $table->string('activity_type')->nullable();
             $table->time('start_time');
             $table->time('end_time');
-            $table->unsignedInteger('duration_minutes');
-            $table->unsignedTinyInteger('intensity_level')->nullable();
+            $table->unsignedInteger('duration_minutes')->nullable();
+            $table->unsignedTinyInteger('intensity')->nullable();
             $table->unsignedTinyInteger('perceived_load')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
