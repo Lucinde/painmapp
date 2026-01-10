@@ -11,6 +11,6 @@ enum ActivityCategory: string
 
     public function label(): string
     {
-        return __('activity.categories.' . $this->value);
+        return __('activitycategory.' . $this->value);
     }
 }

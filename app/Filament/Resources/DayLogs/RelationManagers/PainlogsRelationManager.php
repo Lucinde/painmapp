@@ -29,11 +29,11 @@ class PainlogsRelationManager extends RelationManager
     {
         return $schema->components([
                 TimePicker::make('start_time')
-                    ->label(__('daylog.pain_logs.start_time'))
+                    ->label(__('daylog.start_time'))
                     ->seconds(false)
                     ->required(),
                 TimePicker::make('end_time')
-                    ->label(__('daylog.pain_logs.end_time'))
+                    ->label(__('daylog.end_time'))
                     ->seconds(false)
                     ->required(),
                 Select::make('location')
@@ -59,15 +59,15 @@ class PainlogsRelationManager extends RelationManager
             ->recordTitleAttribute('id')
             ->columns([
                 TextColumn::make('start_time')
-                    ->label(__('daylog.pain_logs.start_time'))
+                    ->label(__('daylog.start_time'))
                     ->dateTime('H:i')
                     ->sortable(),
                 TextColumn::make('end_time')
-                    ->label(__('daylog.pain_logs.end_time'))
+                    ->label(__('daylog.end_time'))
                     ->dateTime('H:i')
                     ->sortable(),
                 TextColumn::make('duration_minutes')
-                    ->label(__('daylog.pain_logs.duration_minutes')),
+                    ->label(__('daylog.duration_minutes')),
                 TextColumn::make('location')
                     ->label(__('daylog.pain_logs.location'))
                     ->badge()
@@ -76,7 +76,7 @@ class PainlogsRelationManager extends RelationManager
                     ->label(__('daylog.pain_logs.intensity'))
                     ->sortable(),
                 TextColumn::make('notes')
-                    ->label(__('daylog.pain_logs.notes'))
+                    ->label(__('daylog.notes'))
                     ->limit(50),
             ])
             ->headerActions([

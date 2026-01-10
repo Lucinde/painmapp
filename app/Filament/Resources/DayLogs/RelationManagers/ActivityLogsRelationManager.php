@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\DayLogs\RelationManagers;
 
+use App\Enums\ActivityCategory;
 use Filament\Actions\AssociateAction;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -14,6 +15,7 @@ use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\RestoreBulkAction;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TimePicker;
@@ -23,30 +25,42 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ActivityLogsRelationManager extends RelationManager
 {
     protected static string $relationship = 'activityLogs';
 
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('daylog.activity_logs.title');
+    }
+
     public function form(Schema $schema): Schema
     {
         return $schema
             ->components([
-                TextInput::make('activity_category')
+                Select::make('activity_category')
+                    ->label(__('daylog.activity_logs.category'))
+                    ->options(ActivityCategory::class)
                     ->required(),
                 TimePicker::make('start_time')
+                    ->label(__('daylog.start_time'))
+                    ->seconds(false)
                     ->required(),
                 TimePicker::make('end_time')
+                    ->label(__('daylog.end_time'))
+                    ->seconds(false)
                     ->required(),
-                TextInput::make('duration_minutes')
-                    ->required()
-                    ->numeric(),
                 TextInput::make('intensity_level')
+                    ->label(__('daylog.intensity'))
                     ->numeric(),
                 TextInput::make('perceived_load')
+                    ->label(__('daylog.activity_logs.perceived_load'))
                     ->numeric(),
                 Textarea::make('notes')
+                    ->label(__('daylog.notes'))
                     ->columnSpanFull(),
             ]);
     }
@@ -57,52 +71,46 @@ class ActivityLogsRelationManager extends RelationManager
             ->recordTitleAttribute('id')
             ->columns([
                 TextColumn::make('activity_category')
+                    ->label(__('daylog.activity_logs.category'))
                     ->searchable(),
                 TextColumn::make('start_time')
+                    ->label(__('daylog.start_time'))
                     ->time()
                     ->sortable(),
                 TextColumn::make('end_time')
+                    ->label(__('daylog.end_time'))
                     ->time()
                     ->sortable(),
                 TextColumn::make('duration_minutes')
+                    ->label(__('daylog.duration_minutes'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('intensity_level')
+                    ->label(__('daylog.intensity'))
                     ->numeric()
                     ->sortable(),
                 TextColumn::make('perceived_load')
+                    ->label(__('daylog.activity_logs.perceived_load'))
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('notes')
+                    ->label(__('daylog.notes')),
             ])
             ->filters([
                 TrashedFilter::make(),
             ])
             ->headerActions([
-                CreateAction::make(),
-                AssociateAction::make(),
+                CreateAction::make()
+                    ->label(__('daylog.activity_logs.create')),
             ])
             ->recordActions([
                 EditAction::make(),
-                DissociateAction::make(),
                 DeleteAction::make(),
                 ForceDeleteAction::make(),
                 RestoreAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DissociateBulkAction::make(),
                     DeleteBulkAction::make(),
                     ForceDeleteBulkAction::make(),
                     RestoreBulkAction::make(),
@@ -111,6 +119,8 @@ class ActivityLogsRelationManager extends RelationManager
             ->modifyQueryUsing(fn (Builder $query) => $query
                 ->withoutGlobalScopes([
                     SoftDeletingScope::class,
-                ]));
+                ]))
+            ->emptyStateHeading(__('daylog.activity_logs.empty_heading'))
+            ->emptyStateDescription(__('daylog.activity_logs.empty_description'));
     }
 }
