@@ -16,6 +16,9 @@ use function Pest\Livewire\livewire;
 use function Pest\Laravel\assertDatabaseHas;
 use App\Filament\Resources\DayLogs\RelationManagers\PainLogsRelationManager;
 use App\Models\PainLog;
+use App\Filament\Resources\DayLogs\RelationManagers\ActivityLogsRelationManager;
+use App\Models\ActivityLog;
+use App\Enums\ActivityCategory;
 
 uses(RefreshDatabase::class);
 
@@ -204,6 +207,94 @@ it('client cannot see painlogs of another users daylog', function () {
     $this->get(
         DayLogResource::getUrl('edit', ['record' => $dayLog])
     )->assertForbidden();
+});
+
+// ACTIVITY LOGS
+it('client sees activitylogs in their own daylog', function () {
+    $dayLog = DayLog::where('user_id', $this->client->id)
+        ->whereHas('activityLogs')
+        ->first();
+
+    expect($dayLog)->not->toBeNull();
+
+    $activityLogs = $dayLog->activityLogs;
+
+    actingAs($this->client, config('filament.auth.guard'));
+
+    livewire(ActivityLogsRelationManager::class, [
+        'ownerRecord' => $dayLog,
+        'pageClass' => EditDayLog::class,
+    ])
+        ->assertOk()
+        ->assertCanSeeTableRecords($activityLogs);
+});
+
+it('client can add an activitylog to their own daylog', function () {
+    $dayLog = DayLog::factory()->for($this->client)->create();
+
+    actingAs($this->client, config('filament.auth.guard'));
+
+    $activityLogData = [
+        'activity_category' => ActivityCategory::WALKING,
+        'start_time'        => '09:00',
+        'end_time'          => '10:15',
+        'intensity'   => 5,
+        'perceived_load'    => 6,
+        'notes'             => 'Morning walk',
+    ];
+
+    livewire(ActivityLogsRelationManager::class, [
+        'ownerRecord' => $dayLog,
+        'pageClass' => EditDayLog::class,
+    ])
+        ->callAction(
+            TestAction::make(CreateAction::class)->table(),
+            $activityLogData
+        )
+        ->assertHasNoErrors()
+        ->assertNotified();
+
+    assertDatabaseHas('activity_logs', [
+        'day_log_id' => $dayLog->id,
+        'activity_category' => ActivityCategory::WALKING->value,
+        'intensity' => 5,
+        'perceived_load' => 6,
+    ]);
+
+    $log = ActivityLog::where('day_log_id', $dayLog->id)->latest()->first();
+
+    expect($log->duration_minutes)->toBe(75); // 09:00 → 10:15
+});
+
+it('client cannot see activitylogs of another users daylog', function () {
+    $dayLog = DayLog::where('user_id', $this->otherClient->id)->first();
+
+    expect($dayLog)->not->toBeNull();
+
+    actingAs($this->client, config('filament.auth.guard'));
+
+    $this->get(
+        DayLogResource::getUrl('edit', ['record' => $dayLog])
+    )->assertForbidden();
+});
+
+it('fysio sees activitylogs of their own clients', function () {
+    $dayLog = DayLog::whereHas('user', fn ($q) =>
+    $q->where('therapist_id', $this->fysio->id)
+    )->whereHas('activityLogs')->first();
+
+    expect($dayLog)->not->toBeNull();
+
+    $activityLogs = $dayLog->activityLogs;
+
+    actingAs($this->fysio, config('filament.auth.guard'));
+
+    livewire(ActivityLogsRelationManager::class, [
+        'ownerRecord' => $dayLog,
+        'pageClass' => EditDayLog::class,
+    ])
+        ->assertOk()
+        ->assertCanSeeTableRecords($activityLogs);
 });
 
 
