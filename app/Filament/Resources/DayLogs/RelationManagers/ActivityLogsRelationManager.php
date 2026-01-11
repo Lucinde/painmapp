@@ -44,6 +44,8 @@ class ActivityLogsRelationManager extends RelationManager
                 Select::make('activity_category')
                     ->label(__('daylog.activity_logs.category'))
                     ->options(ActivityCategory::class)
+                    ->enum(ActivityCategory::class)
+                    ->columnSpanFull()
                     ->required(),
                 TimePicker::make('start_time')
                     ->label(__('daylog.start_time'))
@@ -53,7 +55,7 @@ class ActivityLogsRelationManager extends RelationManager
                     ->label(__('daylog.end_time'))
                     ->seconds(false)
                     ->required(),
-                TextInput::make('intensity_level')
+                TextInput::make('intensity')
                     ->label(__('daylog.intensity'))
                     ->numeric(),
                 TextInput::make('perceived_load')
@@ -85,7 +87,7 @@ class ActivityLogsRelationManager extends RelationManager
                     ->label(__('daylog.duration_minutes'))
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('intensity_level')
+                TextColumn::make('intensity')
                     ->label(__('daylog.intensity'))
                     ->numeric()
                     ->sortable(),

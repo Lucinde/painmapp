@@ -2,15 +2,17 @@
 
 namespace App\Enums;
 
-enum ActivityCategory: string
+use Filament\Support\Contracts\HasLabel;
+
+enum ActivityCategory: string implements HasLabel
 {
     case WALKING = 'walking';
     case CYCLING = 'cycling';
     case SPORTS  = 'sports';
     case REST    = 'rest';
 
-    public function label(): string
+    public function getLabel(): string
     {
-        return __('activitycategory.' . $this->value);
+        return ucfirst(__('activitycategory.' . $this->value));
     }
 }

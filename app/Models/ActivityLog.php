@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\ActivityCategory;
 use App\Traits\CalculateDuration;
 use Illuminate\Database\Eloquent\Casts\AsEnumCollection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ActivityLog extends Model
 {
-    use SoftDeletes, CalculateDuration;
+    use HasFactory, SoftDeletes, CalculateDuration;
 
     protected $fillable = [
         'day_log_id',
@@ -20,7 +21,7 @@ class ActivityLog extends Model
         'start_time',
         'end_time',
         'duration_minutes',
-        'intensity_level',
+        'intensity',
         'perceived_load',
         'notes',
     ];
@@ -34,7 +35,7 @@ class ActivityLog extends Model
     public function casts(): array
     {
         return [
-            'activity_category' => AsEnumCollection::of(ActivityCategory::class),
+            'activity_category' => ActivityCategory::class,
         ];
     }
 }

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\DayLogs\RelationManagers;
 use App\Enums\PainLocation;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -42,13 +43,14 @@ class PainlogsRelationManager extends RelationManager
                     ->multiple()
                     ->required(),
                 TextInput::make('intensity')
-                    ->label(__('daylog.pain_logs.intensity'))
+                    ->label(__('daylog.intensity'))
                     ->numeric()
                     ->minValue(1)
                     ->maxValue(10)
                     ->required(),
-                TextInput::make('notes')
-                    ->label(__('daylog.pain_logs.notes'))
+                Textarea::make('notes')
+                    ->label(__('daylog.notes'))
+                    ->columnSpanFull()
                     ->maxLength(500),
             ]);
     }
@@ -73,7 +75,7 @@ class PainlogsRelationManager extends RelationManager
                     ->badge()
                     ->colors(['primary']),
                 TextColumn::make('intensity')
-                    ->label(__('daylog.pain_logs.intensity'))
+                    ->label(__('daylog.intensity'))
                     ->sortable(),
                 TextColumn::make('notes')
                     ->label(__('daylog.notes'))
