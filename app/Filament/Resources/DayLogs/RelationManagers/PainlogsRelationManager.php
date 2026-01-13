@@ -5,6 +5,7 @@ namespace App\Filament\Resources\DayLogs\RelationManagers;
 use App\Enums\PainLocation;
 use Filament\Actions\CreateAction;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\TimePicker;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -16,7 +17,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PainlogsRelationManager extends RelationManager
 {
-    protected static string $relationship = 'painlogs';
+    protected static string $relationship = 'painLogs';
 
     protected static ?string $recordTitleAttribute = 'id';
 
@@ -29,11 +30,11 @@ class PainlogsRelationManager extends RelationManager
     {
         return $schema->components([
                 TimePicker::make('start_time')
-                    ->label(__('daylog.pain_logs.start_time'))
+                    ->label(__('daylog.start_time'))
                     ->seconds(false)
                     ->required(),
                 TimePicker::make('end_time')
-                    ->label(__('daylog.pain_logs.end_time'))
+                    ->label(__('daylog.end_time'))
                     ->seconds(false)
                     ->required(),
                 Select::make('location')
@@ -42,13 +43,14 @@ class PainlogsRelationManager extends RelationManager
                     ->multiple()
                     ->required(),
                 TextInput::make('intensity')
-                    ->label(__('daylog.pain_logs.intensity'))
+                    ->label(__('daylog.intensity'))
                     ->numeric()
                     ->minValue(1)
                     ->maxValue(10)
                     ->required(),
-                TextInput::make('notes')
-                    ->label(__('daylog.pain_logs.notes'))
+                Textarea::make('notes')
+                    ->label(__('daylog.notes'))
+                    ->columnSpanFull()
                     ->maxLength(500),
             ]);
     }
@@ -59,24 +61,24 @@ class PainlogsRelationManager extends RelationManager
             ->recordTitleAttribute('id')
             ->columns([
                 TextColumn::make('start_time')
-                    ->label(__('daylog.pain_logs.start_time'))
+                    ->label(__('daylog.start_time'))
                     ->dateTime('H:i')
                     ->sortable(),
                 TextColumn::make('end_time')
-                    ->label(__('daylog.pain_logs.end_time'))
+                    ->label(__('daylog.end_time'))
                     ->dateTime('H:i')
                     ->sortable(),
                 TextColumn::make('duration_minutes')
-                    ->label(__('daylog.pain_logs.duration_minutes')),
+                    ->label(__('daylog.duration_minutes')),
                 TextColumn::make('location')
                     ->label(__('daylog.pain_logs.location'))
                     ->badge()
                     ->colors(['primary']),
                 TextColumn::make('intensity')
-                    ->label(__('daylog.pain_logs.intensity'))
+                    ->label(__('daylog.intensity'))
                     ->sortable(),
                 TextColumn::make('notes')
-                    ->label(__('daylog.pain_logs.notes'))
+                    ->label(__('daylog.notes'))
                     ->limit(50),
             ])
             ->headerActions([

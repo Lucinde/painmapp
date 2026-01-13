@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ActivityLog;
 use App\Models\DayLog;
 use App\Models\PainLog;
 use App\Models\User;
@@ -78,12 +79,19 @@ class TestUserSeeder extends Seeder
                     ->count(7)
                     ->create();
 
-                // add random painlogs for client
+                // add random painlogs and activitylogs for client
                 $dayLogs->each(function (DayLog $dayLog) {
                     if (rand(1, 100) <= 70) {
                         PainLog::factory()
                             ->for($dayLog)
                             ->count(rand(1, 4))
+                            ->create();
+                    }
+
+                    if (rand(1, 100) <= 80) {
+                        ActivityLog::factory()
+                            ->for($dayLog)
+                            ->count(rand(1, 3))
                             ->create();
                     }
                 });

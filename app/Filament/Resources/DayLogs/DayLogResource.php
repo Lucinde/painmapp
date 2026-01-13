@@ -56,6 +56,7 @@ class DayLogResource extends Resource
     {
         return [
             RelationManagers\PainlogsRelationManager::class,
+            RelationManagers\ActivityLogsRelationManager::class,
         ];
     }
 
