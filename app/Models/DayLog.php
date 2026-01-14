@@ -20,6 +20,24 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @method static Builder<static>|DayLog query()
  * @method static Builder<static>|DayLog withTrashed(bool $withTrashed = true)
  * @method static Builder<static>|DayLog withoutTrashed()
+ * @property int $id
+ * @property int $user_id
+ * @property \Illuminate\Support\Carbon $date
+ * @property string|null $notes
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\ActivityLog> $activityLogs
+ * @property-read int|null $activity_logs_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\PainLog> $painLogs
+ * @property-read int|null $pain_logs_count
+ * @method static Builder<static>|DayLog whereCreatedAt($value)
+ * @method static Builder<static>|DayLog whereDate($value)
+ * @method static Builder<static>|DayLog whereDeletedAt($value)
+ * @method static Builder<static>|DayLog whereId($value)
+ * @method static Builder<static>|DayLog whereNotes($value)
+ * @method static Builder<static>|DayLog whereUpdatedAt($value)
+ * @method static Builder<static>|DayLog whereUserId($value)
  * @mixin \Eloquent
  */
 class DayLog extends Model

@@ -10,6 +10,7 @@ use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -46,6 +47,8 @@ class DayLogsTable
             ])
             ->filters([
                 TrashedFilter::make(),
+                SelectFilter::make('user')
+                    ->relationship('user', 'name', fn($query) => $query->where('therapist_id', Auth::id()))
             ])
             ->recordActions([
                 ViewAction::make(),
