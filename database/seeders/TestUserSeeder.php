@@ -73,14 +73,18 @@ class TestUserSeeder extends Seeder
                 $client->assignRole($clientRole);
 
                 // create daylogs for clients
-                /** @var Collection<int, DayLog> $dayLogs */
-                $dayLogs = DayLog::factory()
-                    ->forUser($client)
-                    ->count(7)
-                    ->create();
+                $dayLogs = collect();
 
-                // add random painlogs and activitylogs for client
-                $dayLogs->each(function (DayLog $dayLog) {
+                for ($daysAgo = 0; $daysAgo < 30; $daysAgo++) {
+                    $date = now()->subDays($daysAgo)->startOfDay();
+
+                    $dayLog = DayLog::factory()
+                        ->forUser($client)
+                        ->create([
+                            'date' => $date,
+                        ]);
+
+                    // voeg random painlogs en activitylogs toe
                     if (rand(1, 100) <= 70) {
                         PainLog::factory()
                             ->for($dayLog)
@@ -94,7 +98,9 @@ class TestUserSeeder extends Seeder
                             ->count(rand(1, 3))
                             ->create();
                     }
-                });
+
+                    $dayLogs->push($dayLog);
+                }
 
             }
         }
