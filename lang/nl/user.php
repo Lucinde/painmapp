@@ -8,4 +8,6 @@ return [
     'title' => 'gebruiker',
     'plural_title' => 'gebruikers',
     'latest_daylog' => 'Laatste log',
+    'active_clients' => 'Cliënten',
+    'create_client' => 'Cliënt aanmaken',
 ];

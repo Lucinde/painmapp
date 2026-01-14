@@ -2,10 +2,16 @@
 
 namespace App\Filament\Resources\Users\Widgets;
 
+use App\Filament\Resources\Users\Pages\CreateUser;
+use App\Filament\Resources\Users\Schemas\UserForm;
+use App\Filament\Resources\Users\UserResource;
 use App\Models\DayLog;
 use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\CreateAction;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
@@ -15,6 +21,16 @@ use Illuminate\Support\Facades\Auth;
 class ActiveClients extends TableWidget
 {
     protected int | string | array $columnSpan = 'full';
+
+    public function getTableHeading(): string
+    {
+        return __('user.active_clients');
+    }
+
+    public static function canView(): bool
+    {
+        return Auth::check() && Auth::user()->can('ViewClient:User');
+    }
 
     public function table(Table $table): Table
     {
@@ -35,7 +51,31 @@ class ActiveClients extends TableWidget
                 //
             ])
             ->headerActions([
-                //
+                CreateAction::make()
+                    ->schema([
+                            TextInput::make('name')
+                                ->label(ucfirst(__('general.name')))
+                                ->required(),
+                            TextInput::make('email')
+                                ->label(ucfirst(__('general.email')))
+                                ->email()
+                                ->required(),
+                            TextInput::make('password')
+                                ->label(ucfirst(__('general.password')))
+                                ->password()
+                                ->revealable()
+                                ->copyable(copyMessage: __('general.copied'))
+                                ->required(fn($livewire) => $livewire instanceof CreateUser)
+                                ->dehydrated(fn ($state) => filled($state)),
+                    ])
+                    ->using(function (array $data) {
+                        if (Auth::user()->can('view client log')) {
+                            $data['therapist_id'] = Auth::id();
+                        }
+
+                        return User::create($data);
+                    })
+                    ->label(__('user.create_client')),
             ])
             ->recordActions([
                 Action::make('view_daylogs')
