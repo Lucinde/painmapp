@@ -38,12 +38,12 @@ class DayLogInfolist
                 RepeatableEntry::make('painlogs')
                     ->label(ucfirst(__('daylog.pain_logs.title')))
                     ->table([
-                        TableColumn::make(__('daylog.pain_logs.start_time')),
-                        TableColumn::make(__('daylog.pain_logs.end_time')),
-                        TableColumn::make(__('daylog.pain_logs.duration_minutes')),
-                        TableColumn::make(__('daylog.pain_logs.intensity')),
+                        TableColumn::make(__('daylog.start_time')),
+                        TableColumn::make(__('daylog.end_time')),
+                        TableColumn::make(__('daylog.duration_minutes')),
+                        TableColumn::make(__('daylog.intensity')),
                         TableColumn::make(__('daylog.pain_logs.location')),
-                        TableColumn::make(__('daylog.pain_logs.notes')),
+                        TableColumn::make(__('daylog.notes')),
                     ])
                     ->schema([
                         TextEntry::make('start_time')
@@ -55,6 +55,29 @@ class DayLogInfolist
                         TextEntry::make('location'),
                         TextEntry::make('notes'),
                     ])
+                    ->placeholder(__('daylog.pain_logs.empty_heading'))
+                    ->columnSpanFull(),
+                RepeatableEntry::make('activitylogs')
+                    ->label(ucfirst(__('daylog.activity_logs.title')))
+                    ->table([
+                        TableColumn::make(__('daylog.start_time')),
+                        TableColumn::make(__('daylog.end_time')),
+                        TableColumn::make(__('daylog.duration_minutes')),
+                        TableColumn::make(__('daylog.activity_logs.category')),
+                        TableColumn::make(__('daylog.activity_logs.perceived_load')),
+                        TableColumn::make(__('daylog.notes')),
+                    ])
+                    ->schema([
+                        TextEntry::make('start_time')
+                            ->dateTime('H:i'),
+                        TextEntry::make('end_time')
+                            ->dateTime('H:i'),
+                        TextEntry::make('duration_minutes'),
+                        TextEntry::make('activity_category'),
+                        TextEntry::make('perceived_load'),
+                        TextEntry::make('notes'),
+                    ])
+                    ->placeholder(__('daylog.activity_logs.empty_heading'))
                     ->columnSpanFull(),
             ]);
     }
