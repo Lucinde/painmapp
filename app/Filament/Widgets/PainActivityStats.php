@@ -3,12 +3,17 @@
 namespace App\Filament\Widgets;
 
 use App\Models\DayLog;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Carbon\Carbon;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
 class PainActivityStats extends StatsOverviewWidget
 {
+    use HasWidgetShield;
+
+    protected ?string $heading = 'Statistieken';
+
     protected function getStats(): array
     {
         $startDate = now()->subDays(7);

@@ -3,11 +3,14 @@
 namespace App\Filament\Widgets;
 
 use App\Models\DayLog;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Carbon\Carbon;
 use Filament\Widgets\ChartWidget;
 
 class PainActivityChart extends ChartWidget
 {
+    use HasWidgetShield;
+
     protected ?string $heading = 'Activiteit vs Pijn (per dag)';
     protected ?string $maxHeight = '300px';
     protected int|string|array $columnSpan = 'full';
