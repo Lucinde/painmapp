@@ -112,7 +112,7 @@ it('client cannot access other users daylog via direct url', function () {
 
     $this->get(
         DayLogResource::getUrl('edit', ['record' => $log])
-    )->assertForbidden();
+    )->assertNotFound();
 });
 
 it('fysio cannot access non-client daylog via direct url', function () {
@@ -122,7 +122,7 @@ it('fysio cannot access non-client daylog via direct url', function () {
 
     $this->get(
         DayLogResource::getUrl('edit', ['record' => $log])
-    )->assertForbidden();
+    )->assertNotFound();
 });
 
 // UPDATE
@@ -148,7 +148,7 @@ it('client cannot update other users daylog', function () {
     actingAs($this->client, config('filament.auth.guard'));
 
     $this->get(DayLogResource::getUrl('edit', ['record' => $log]))
-        ->assertForbidden();
+        ->assertNotFound();
 });
 
 // PAINLOGS
@@ -206,7 +206,7 @@ it('client cannot see painlogs of another users daylog', function () {
 
     $this->get(
         DayLogResource::getUrl('edit', ['record' => $dayLog])
-    )->assertForbidden();
+    )->assertNotFound();
 });
 
 // ACTIVITY LOGS
@@ -275,7 +275,7 @@ it('client cannot see activitylogs of another users daylog', function () {
 
     $this->get(
         DayLogResource::getUrl('edit', ['record' => $dayLog])
-    )->assertForbidden();
+    )->assertNotFound();
 });
 
 it('fysio sees activitylogs of their own clients', function () {
