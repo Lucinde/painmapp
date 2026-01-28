@@ -129,4 +129,15 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasVerifiedEmail();
     }
+
+    protected static function booted(): void
+    {
+        static::created(function (User $user) {
+            if (auth()->check() && auth()->user()->hasRole('fysio')) {
+                $user->therapist_id ??= auth()->id();
+                $user->assignRole('client');
+                $user->save();
+            }
+        });
+    }
 }
