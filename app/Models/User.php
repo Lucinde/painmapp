@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
@@ -54,7 +55,7 @@ use Spatie\Permission\Traits\HasRoles;
  * @method static Builder<static>|User orderByLatestDaylog(string $direction = 'desc')
  * @mixin \Eloquent
  */
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -126,6 +127,17 @@ class User extends Authenticatable
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return true;
+        return $this->hasVerifiedEmail();
+    }
+
+    protected static function booted(): void
+    {
+        static::created(function (User $user) {
+            if (auth()->check() && auth()->user()->hasRole('fysio')) {
+                $user->therapist_id ??= auth()->id();
+                $user->assignRole('client');
+                $user->save();
+            }
+        });
     }
 }

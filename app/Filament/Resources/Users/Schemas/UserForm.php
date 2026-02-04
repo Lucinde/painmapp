@@ -28,11 +28,23 @@ class UserForm
                     ->copyable(copyMessage: __('general.copied'))
                     ->required(fn($livewire) => $livewire instanceof CreateUser)
                     ->dehydrated(fn ($state) => filled($state)),
+                Select::make('roles')
+                    ->label(__('Rol'))
+                    ->relationship(
+                        name: 'roles',
+                        titleAttribute: 'name',
+                        modifyQueryUsing: fn ($query) =>
+                        $query->where('guard_name', 'web')
+                    )
+                    ->visible(fn () => auth()->user()->hasRole('super_admin'))
+                    ->preload()
+                    ->multiple()
+                    ->searchable(),
                 Select::make('therapist_id')
                     ->label(ucfirst(__('user.physio')))
                     ->relationship('therapist', 'name', modifyQueryUsing: fn ($query) => $query->whereHas('roles', fn($q) => $q->where('name', 'fysio')))
-                    ->default(fn() => auth()->user()->hasRole('fysio') ? auth()->id() : null)
-                    ->disabled(fn() => auth()->user()->hasRole('fysio')),
+                    ->disabled(fn () => auth()->user()->hasRole('fysio'))
+                    ->saveRelationshipsWhenDisabled(),
             ]);
     }
 }
