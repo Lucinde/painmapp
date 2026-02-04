@@ -11,14 +11,16 @@ class PainActivityChart extends ChartWidget
 {
     use HasWidgetShield;
 
-    protected ?string $heading = 'Activiteit vs Pijn (per dag)';
-    protected ?string $maxHeight = '300px';
+    public function getHeading(): string
+    {
+        return __('daylog.activity_logs.activity_vs_pain');
+    }
     protected int|string|array $columnSpan = 'full';
 
     protected function getFilters(): ?array
     {
         $months = [
-            'last30' => 'Laatste 30 dagen',
+            'last30' => __('daylog.activity_logs.last_30_days'),
         ];
 
         // Laat de laatste 12 maanden zien in de keuzelijst
@@ -67,7 +69,7 @@ class PainActivityChart extends ChartWidget
             'labels' => $labels,
             'datasets' => [
                 [
-                    'label' => 'Activiteit (min)',
+                    'label' => __('daylog.activity_logs.activity_label'),
                     'data' => $activityData,
                     'type' => 'bar',
                     'backgroundColor' => 'rgba(255, 206, 86, 0.8)', // geel
@@ -76,7 +78,7 @@ class PainActivityChart extends ChartWidget
                     'yAxisID' => 'y',
                 ],
                 [
-                    'label' => 'Pijn (min)',
+                    'label' => __('daylog.activity_logs.pain_label'),
                     'data' => $painData,
                     'type' => 'line',
                     'borderColor' => 'rgba(54, 162, 235, 1)', // blauw
@@ -106,12 +108,12 @@ class PainActivityChart extends ChartWidget
             ],
             'scales' => [
                 'y' => [
-                    'title' => ['display' => true, 'text' => 'Activiteit (min)'],
+                    'title' => ['display' => true, 'text' => __('daylog.activity_logs.activity_label')],
                 ],
                 'y1' => [
                     'position' => 'right',
                     'grid' => ['drawOnChartArea' => false],
-                    'title' => ['display' => true, 'text' => 'Pijn (min)'],
+                    'title' => ['display' => true, 'text' => __('daylog.activity_logs.pain_label')],
                 ],
             ],
         ];

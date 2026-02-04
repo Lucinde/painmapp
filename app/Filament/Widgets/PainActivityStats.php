@@ -11,7 +11,10 @@ class PainActivityStats extends StatsOverviewWidget
 {
     use HasWidgetShield;
 
-    protected ?string $heading = 'Statistieken';
+    public function getHeading(): string
+    {
+        return __('daylog.activity_logs.statistics');
+    }
 
     protected function getStats(): array
     {
