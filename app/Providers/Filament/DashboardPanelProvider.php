@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Widgets\PainActivityChart;
+use App\Filament\Widgets\PainActivityStats;
 use App\Filament\Resources\Users\Widgets\ActiveClients;
 use Filament\Http\Middleware\Authenticate;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
@@ -46,6 +48,8 @@ class DashboardPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
                 ActiveClients::class,
+                PainActivityChart::class,
+                PainActivityStats::class,
             ])
             ->middleware([
                 EncryptCookies::class,
