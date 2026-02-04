@@ -4,7 +4,6 @@ namespace App\Filament\Widgets;
 
 use App\Models\DayLog;
 use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
-use Carbon\Carbon;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
@@ -16,29 +15,47 @@ class PainActivityStats extends StatsOverviewWidget
 
     protected function getStats(): array
     {
-        $startDate = now()->subDays(7);
-        $endDate = now();
+        // Vandaag
+        $today = now()->toDateString();
+
+        $todayLog = DayLog::with(['activityLogs', 'painLogs'])
+            ->where('user_id', auth()->id())
+            ->where('date', $today)
+            ->first();
+
+        $todayActivity = $todayLog?->activityLogs->sum('duration_minutes') ?? 0;
+        $todayPain = $todayLog?->painLogs->sum('duration_minutes') ?? 0;
+
+        // Laatste 7 dagen (incl. vandaag)
+        $startDate = now()->subDays(6)->toDateString();
+        $endDate = now()->toDateString();
 
         $logs = DayLog::with(['activityLogs', 'painLogs'])
             ->where('user_id', auth()->id())
             ->whereBetween('date', [$startDate, $endDate])
             ->get();
 
-        $totalActivity = $logs->sum(function($log) {
-            return $log->activityLogs->sum('duration_minutes') ?? 0;
-        });
+        $totalActivity = $logs->sum(fn ($log) =>
+            $log->activityLogs->sum('duration_minutes') ?? 0
+        );
 
-        $totalPain = $logs->sum(function($log) {
-            return $log->painLogs->sum('duration_minutes') ?? 0;
-        });
+        $totalPain = $logs->sum(fn ($log) =>
+            $log->painLogs->sum('duration_minutes') ?? 0
+        );
 
-        $daysCount = $logs->count() ?: 1;
+        $daysCount = max($logs->count(), 1);
 
         return [
-            Stat::make('Totale Activiteit (7 dagen)', $totalActivity . ' min'),
-            Stat::make('Totale Pijn (7 dagen)', $totalPain . ' min'),
-            Stat::make('Gemiddelde Activiteit per dag', round($totalActivity / $daysCount) . ' min'),
-            Stat::make('Gemiddelde Pijn per dag', round($totalPain / $daysCount) . ' min'),
+            Stat::make(__('daylog.activity_logs.activity_today'), $todayActivity . ' min'),
+            Stat::make(__('daylog.activity_logs.pain_today'), $todayPain . ' min'),
+            Stat::make(
+                __('daylog.activity_logs.average_activity_day'),
+                round($totalActivity / $daysCount) . ' min'
+            )->description(__('daylog.activity_logs.last_7_days')),
+            Stat::make(
+                __('daylog.activity_logs.average_pain_day'),
+                round($totalPain / $daysCount) . ' min'
+            )->description(__('daylog.activity_logs.last_7_days')),
         ];
     }
 }

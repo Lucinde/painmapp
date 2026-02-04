@@ -23,5 +23,10 @@ return [
         'empty_description' => 'Er zijn nog geen activiteiten toegevoegd voor deze dag.',
         'category' => 'Categorie',
         'perceived_load' => 'Gevoelsmatige belasting',
+        'last_7_days' => 'Laatste 7 dagen',
+        'activity_today' => 'Activiteit vandaag',
+        'average_activity_day' => 'Gem. activiteit per dag',
+        'pain_today' => 'Pijn vandaag',
+        'average_pain_day' => 'Gem. pijn per dag',
     ]
 ];
