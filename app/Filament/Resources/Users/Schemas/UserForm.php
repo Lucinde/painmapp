@@ -43,8 +43,7 @@ class UserForm
                 Select::make('therapist_id')
                     ->label(ucfirst(__('user.physio')))
                     ->relationship('therapist', 'name', modifyQueryUsing: fn ($query) => $query->whereHas('roles', fn($q) => $q->where('name', 'fysio')))
-                    ->disabled(fn () => auth()->user()->hasRole('fysio'))
-                    ->saveRelationshipsWhenDisabled(),
+                    ->hidden(fn () => auth()->user()->hasRole('fysio')),
             ]);
     }
 }
