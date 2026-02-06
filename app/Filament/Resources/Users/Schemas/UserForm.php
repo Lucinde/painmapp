@@ -27,6 +27,7 @@ class UserForm
                     ->revealable()
                     ->copyable(copyMessage: __('general.copied'))
                     ->required(fn($livewire) => $livewire instanceof CreateUser)
+                    ->visible(fn ($livewire) => $livewire instanceof CreateUser)
                     ->dehydrated(fn ($state) => filled($state)),
                 Select::make('roles')
                     ->label(__('Rol'))
