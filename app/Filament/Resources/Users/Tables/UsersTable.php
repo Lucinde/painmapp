@@ -20,6 +20,7 @@ class UsersTable
         return $table
             ->columns([
                 TextColumn::make('therapist.name')
+                    ->hidden(fn() => auth()->user()->hasRole('fysio'))
                     ->label(ucfirst(__('user.physio')))
                     ->searchable(),
                 TextColumn::make('name')
