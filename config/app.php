@@ -123,4 +123,14 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Demo data
+    |--------------------------------------------------------------------------
+    */
+    'demo' => [
+        'admin_email' => env('DEMO_ADMIN_EMAIL', 'super_admin@example.com'),
+        'admin_password' => env('DEMO_ADMIN_PASSWORD', 'password123'),
+    ]
+
 ];
