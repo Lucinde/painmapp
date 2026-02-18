@@ -6,10 +6,13 @@ use App\Models\DayLog;
 use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Carbon\Carbon;
 use Filament\Widgets\ChartWidget;
+use Illuminate\Support\Facades\Auth;
 
 class PainActivityChart extends ChartWidget
 {
     use HasWidgetShield;
+
+    public ?int $userId = null;
 
     public function getHeading(): string
     {
@@ -32,6 +35,29 @@ class PainActivityChart extends ChartWidget
         return $months;
     }
 
+    public static function canView(): bool
+    {
+        $user = Auth::user();
+
+        if (! $user) {
+            return false;
+        }
+
+        $isDashboard = request()->routeIs('filament.dashboard.pages.dashboard');
+
+        $isPhysioOrAdmin =
+            $user->can('ViewClient:DayLog') ||
+            $user->can('ViewAny:DayLog');
+
+        // clients see widget on dashboard
+        if ($isDashboard) {
+            return ! $isPhysioOrAdmin;
+        }
+
+        // fysio/admin sees it in daylog index
+        return $isPhysioOrAdmin;
+    }
+
     protected function getData(): array
     {
         $filter = $this->filter ?? 'last30';
@@ -45,8 +71,10 @@ class PainActivityChart extends ChartWidget
             $endDate = $startDate->copy()->endOfMonth();
         }
 
+        $userId = $this->getTargetUserId();
+
         $logs = DayLog::with(['activityLogs', 'painLogs'])
-            ->where('user_id', auth()->id()) // filter op ingelogde gebruiker
+            ->where('user_id', $userId)
             ->whereBetween('date', [$startDate, $endDate])
             ->orderBy('date')
             ->get();
@@ -117,5 +145,10 @@ class PainActivityChart extends ChartWidget
                 ],
             ],
         ];
+    }
+
+    protected function getTargetUserId(): ?int
+    {
+        return $this->userId ?? auth()->id();
     }
 }

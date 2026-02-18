@@ -27,6 +27,7 @@ class UserForm
                     ->revealable()
                     ->copyable(copyMessage: __('general.copied'))
                     ->required(fn($livewire) => $livewire instanceof CreateUser)
+                    ->visible(fn ($livewire) => $livewire instanceof CreateUser)
                     ->dehydrated(fn ($state) => filled($state)),
                 Select::make('roles')
                     ->label(__('Rol'))
@@ -43,8 +44,7 @@ class UserForm
                 Select::make('therapist_id')
                     ->label(ucfirst(__('user.physio')))
                     ->relationship('therapist', 'name', modifyQueryUsing: fn ($query) => $query->whereHas('roles', fn($q) => $q->where('name', 'fysio')))
-                    ->disabled(fn () => auth()->user()->hasRole('fysio'))
-                    ->saveRelationshipsWhenDisabled(),
+                    ->hidden(fn () => auth()->user()->hasRole('fysio')),
             ]);
     }
 }

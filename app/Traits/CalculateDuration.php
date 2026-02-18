@@ -10,9 +10,14 @@ trait CalculateDuration
     {
         static::saving(function ($model) {
             if ($model->start_time && $model->end_time) {
-                $model->duration_minutes =
-                    Carbon::parse($model->start_time)
-                        ->diffInMinutes(Carbon::parse($model->end_time));
+                $start = Carbon::parse($model->start_time);
+                $end   = Carbon::parse($model->end_time);
+
+                if ($end->lt($start)) {
+                    $end->addDay();
+                }
+
+                $model->duration_minutes = $start->diffInMinutes($end);
             }
         });
     }

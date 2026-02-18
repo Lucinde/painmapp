@@ -18,6 +18,7 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Models\User;
 
 class DayLogResource extends Resource
 {
@@ -35,6 +36,21 @@ class DayLogResource extends Resource
     public static function getPluralModelLabel(): string
     {
         return __('daylog.plural_title');
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        /** @var User|null $user */
+        $user = Filament::auth()->user();
+
+        if (! $user) {
+            return false;
+        }
+
+        return ! (
+            $user->can('ViewAny:DayLog') ||
+            $user->can('ViewClient:DayLog')
+        );
     }
 
     public static function form(Schema $schema): Schema
