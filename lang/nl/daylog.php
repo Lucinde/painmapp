@@ -8,6 +8,8 @@ return [
     'duration_minutes' => 'Duur (minuten)',
     'intensity' => 'Intensiteit (1-10)',
     'notes' => 'Notities',
+    'create' => 'Dagelijks log toevoegen',
+    'today' => 'Vandaag',
     'pain_logs' => [
         'title' => 'Pijn Logboek',
         'create' => 'Pijnlog toevoegen',
