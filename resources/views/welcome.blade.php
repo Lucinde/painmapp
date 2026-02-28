@@ -34,12 +34,12 @@
                     Inloggen
                 </a>
 
-                <a
-                    href="{{ url('/dashboard/register') }}"
-                    class="text-sm font-medium text-slate-700 hover:text-slate-900 leading-none"
-                >
-                    Registreren
-                </a>
+{{--                <a--}}
+{{--                    href="{{ url('/dashboard/register') }}"--}}
+{{--                    class="text-sm font-medium text-slate-700 hover:text-slate-900 leading-none"--}}
+{{--                >--}}
+{{--                    Registreren--}}
+{{--                </a>--}}
             </nav>
 
         </div>
@@ -68,13 +68,13 @@
                     Inloggen
                 </a>
 
-                <a
-                    href="{{ url('/dashboard/register') }}"
-                    class="inline-flex items-center rounded-md border border-slate-300
-                           px-6 py-3 text-base font-medium text-slate-700 hover:bg-slate-100"
-                >
-                    Registreren
-                </a>
+{{--                <a--}}
+{{--                    href="{{ url('/dashboard/register') }}"--}}
+{{--                    class="inline-flex items-center rounded-md border border-slate-300--}}
+{{--                           px-6 py-3 text-base font-medium text-slate-700 hover:bg-slate-100"--}}
+{{--                >--}}
+{{--                    Registreren--}}
+{{--                </a>--}}
             </div>
         </div>
 
