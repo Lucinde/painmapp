@@ -119,4 +119,15 @@ class DayLogResource extends Resource
         });
     }
 
+    public static function isPhysioOrAdmin(?User $user = null): bool
+    {
+        $user ??= Filament::auth()->user();
+
+        if (! $user) {
+            return false;
+        }
+
+        return $user->can('ViewClient:DayLog') || $user->can('ViewAny:DayLog');
+    }
+
 }

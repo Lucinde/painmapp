@@ -1,8 +1,9 @@
 <?php
 
 return [
-    'walking' => 'lopen',
+    'walking' => 'wandelen',
     'cycling' => 'fietsen',
     'sports' => 'sporten',
-    'rest' => 'ontspanning'
+    'rest' => 'ontspanning',
+    'other' => 'overige',
 ];

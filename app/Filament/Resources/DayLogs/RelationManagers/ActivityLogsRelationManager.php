@@ -103,7 +103,8 @@ class ActivityLogsRelationManager extends RelationManager
             ])
             ->headerActions([
                 CreateAction::make()
-                    ->label(__('daylog.activity_logs.create')),
+                    ->label(__('daylog.activity_logs.create'))
+                    ->modalHeading(__('daylog.activity_logs.create')),
             ])
             ->recordActions([
                 EditAction::make(),

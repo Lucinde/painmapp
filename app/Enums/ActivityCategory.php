@@ -10,6 +10,7 @@ enum ActivityCategory: string implements HasLabel
     case CYCLING = 'cycling';
     case SPORTS  = 'sports';
     case REST    = 'rest';
+    case OTHER = 'other';
 
     public function getLabel(): string
     {
