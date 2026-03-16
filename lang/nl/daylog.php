@@ -12,6 +12,7 @@ return [
     'today' => 'Vandaag',
     'pain_logs' => [
         'title' => 'Pijn Logboek',
+        'record_title' => 'Pijnlog voor',
         'create' => 'Pijnlog toevoegen',
         'empty_heading' => 'Geen pijnlogs',
         'empty_description' => 'Er zijn nog geen pijnlogs toegevoegd voor deze dag.',

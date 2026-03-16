@@ -70,18 +70,20 @@ class ActivityLogsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('id')
+            ->recordTitle(fn ($record) =>
+                "{$record->activity_category->getLabel()}"
+            )
             ->columns([
                 TextColumn::make('activity_category')
                     ->label(__('daylog.activity_logs.category'))
                     ->searchable(),
                 TextColumn::make('start_time')
                     ->label(__('daylog.start_time'))
-                    ->time()
+                    ->time('H:i')
                     ->sortable(),
                 TextColumn::make('end_time')
                     ->label(__('daylog.end_time'))
-                    ->time()
+                    ->time('H:i')
                     ->sortable(),
                 TextColumn::make('duration_minutes')
                     ->label(__('daylog.duration_minutes'))

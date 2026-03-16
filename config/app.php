@@ -131,6 +131,8 @@ return [
     'demo' => [
         'admin_email' => env('DEMO_ADMIN_EMAIL', 'super_admin@example.com'),
         'admin_password' => env('DEMO_ADMIN_PASSWORD', 'password123'),
+        'fysio_password' => env('DEMO_FYSIO_PASSWORD', 'password123'),
+        'client_password' => env('DEMO_CLIENT_PASSWORD', 'password123'),
     ]
 
 ];

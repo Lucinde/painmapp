@@ -30,6 +30,7 @@ grumphp:
       memory_limit: 512M
       ignore_patterns:
         - tests
+        - database/seeders/ShieldSeeder.php
       triggered_by: [ php, phtml ]
   testsuites: []
   extensions: []

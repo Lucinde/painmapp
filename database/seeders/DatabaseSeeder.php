@@ -19,9 +19,5 @@ class DatabaseSeeder extends Seeder
 
         // Add Roles
         $this->call(ShieldSeeder::class);
-
-        // Add Test Users
-        // TODO: verwijderen bij livegang
-        $this->call(TestUserSeeder::class);
     }
 }

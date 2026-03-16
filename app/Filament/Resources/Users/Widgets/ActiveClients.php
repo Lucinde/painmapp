@@ -7,6 +7,7 @@ use App\Filament\Resources\Users\Schemas\UserForm;
 use App\Filament\Resources\Users\UserResource;
 use App\Models\DayLog;
 use App\Models\User;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\CreateAction;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ActiveClients extends TableWidget
 {
+    use HasWidgetShield;
     protected int | string | array $columnSpan = 'full';
 
     public function getTableHeading(): string
