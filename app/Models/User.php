@@ -136,6 +136,7 @@ class User extends Authenticatable implements FilamentUser
             if (auth()->check() && auth()->user()->hasRole('fysio')) {
                 $user->therapist_id ??= auth()->id();
                 $user->assignRole('client');
+                $user->email_verified_at ??= now();
                 $user->save();
             }
         });
