@@ -15,12 +15,14 @@ class UserFactory extends Factory
     /**
      * The name of the factory's corresponding model.
      *
-     * @var string
+     * @var class-string<\App\Models\User>
      */
     protected $model = User::class;
 
     /**
      * The current password being used by the factory.
+     *
+     * @var string|null
      */
     protected static ?string $password;
 
@@ -32,27 +34,31 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name'           => fake()->name(),
-            'email'          => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'password'       => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
-            'therapist_id'   => null, // standaard geen therapist
+            'name'             => $this->faker->name(),
+            'email'            => $this->faker->unique()->safeEmail(),
+            'email_verified_at'=> now(),
+            'password'         => static::$password ??= Hash::make('password'),
+            'remember_token'   => Str::random(10),
+            'therapist_id'     => null, // standaard geen therapist
         ];
     }
 
     /**
      * Indicate that the model's email address should be unverified.
+     *
+     * @return static
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
     }
 
     /**
      * Create an admin user (via Spatie/Shield)
+     *
+     * @return static
      */
     public function admin(): static
     {
@@ -63,6 +69,8 @@ class UserFactory extends Factory
 
     /**
      * Create a fysio user (via Spatie/Shield)
+     *
+     * @return static
      */
     public function fysio(): static
     {
@@ -73,6 +81,9 @@ class UserFactory extends Factory
 
     /**
      * Create a client user assigned to a therapist
+     *
+     * @param \App\Models\User $therapist
+     * @return static
      */
     public function clientWithTherapist(User $therapist): static
     {
