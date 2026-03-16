@@ -23,7 +23,7 @@ class DemoDataSeeder extends Seeder
             ['email' => config('app.demo.admin_email')],
             [
                 'name' => 'Super Admin',
-                'password' => Hash::make(config('app.demo.admin_password')), // evt via env
+                'password' => Hash::make(config('app.demo.admin_password')),
                 'email_verified_at' => now(),
             ]
         );
@@ -34,7 +34,11 @@ class DemoDataSeeder extends Seeder
         $fysios = User::factory()
             ->count(3)
             ->create()
-            ->each(fn ($u) => $u->assignRole($fysioRole));
+            ->each(function ($u, $index) use ($fysioRole) {
+                $u->assignRole($fysioRole);
+                $u->password = Hash::make(config('app.demo.fysio_password'));
+                $u->save();
+            });
 
         // Clients + logs
         foreach ($fysios as $fysio) {
@@ -43,24 +47,34 @@ class DemoDataSeeder extends Seeder
                 ->create([
                     'therapist_id' => $fysio->id,
                 ])
-                ->each(fn ($u) => $u->assignRole($clientRole));
+                ->each(function ($u, $index) use ($clientRole) {
+                    $u->assignRole($clientRole);
+                    $u->password = Hash::make(config('app.demo.client_password'));
+                    $u->save();
+                });
 
             foreach ($clients as $client) {
-                DayLog::factory()
-                    ->count(60)
-                    ->forUser($client)
-                    ->create()
-                    ->each(function ($dayLog) {
-                        PainLog::factory()
-                            ->count(rand(0, 3))
-                            ->for($dayLog)
-                            ->create();
+                $dates = collect(range(0, 59))
+                    ->filter(fn () => rand(0, 100) > 20)
+                    ->map(fn ($daysAgo) => now()->subDays($daysAgo)->toDateString());
 
-                        ActivityLog::factory()
-                            ->count(rand(0, 2))
-                            ->for($dayLog)
-                            ->create();
-                    });
+                foreach ($dates as $date) {
+                    $dayLog = DayLog::factory()
+                        ->forUser($client)
+                        ->create([
+                            'date' => $date,
+                        ]);
+
+                    PainLog::factory()
+                        ->count(rand(0, 3))
+                        ->for($dayLog)
+                        ->create();
+
+                    ActivityLog::factory()
+                        ->count(rand(0, 2))
+                        ->for($dayLog)
+                        ->create();
+                }
             }
         }
     }
