@@ -24,7 +24,8 @@ class DayLogsTable
             ->columns([
                 TextColumn::make('user.name')
                     ->label(ucfirst(__('general.name')))
-                    ->searchable(),
+                    ->searchable()
+                    ->visible(fn () => Auth::user()->can('ViewClient:User')),
                 TextColumn::make('date')
                     ->label(ucfirst(__('general.date')))
                     ->date()

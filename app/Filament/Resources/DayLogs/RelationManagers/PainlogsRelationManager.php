@@ -4,6 +4,10 @@ namespace App\Filament\Resources\DayLogs\RelationManagers;
 
 use App\Enums\PainLocation;
 use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\RestoreAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -58,7 +62,13 @@ class PainlogsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('id')
+            ->recordTitle(fn ($record) =>
+                __('daylog.pain_logs.record_title') . ' "' . collect($record->location ?? [])
+                    ->map(fn ($loc) => $loc->getLabel())
+                    ->take(3)
+                    ->join(', ')
+                . '"'
+            )
             ->columns([
                 TextColumn::make('start_time')
                     ->label(__('daylog.start_time'))
@@ -84,6 +94,12 @@ class PainlogsRelationManager extends RelationManager
             ->headerActions([
                 CreateAction::make()
                     ->label(__('daylog.pain_logs.create')),
+            ])
+            ->recordActions([
+                EditAction::make(),
+                DeleteAction::make(),
+                ForceDeleteAction::make(),
+                RestoreAction::make(),
             ])
             ->emptyStateHeading(__('daylog.pain_logs.empty_heading'))
             ->emptyStateDescription(__('daylog.pain_logs.empty_description'));
